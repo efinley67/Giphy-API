@@ -1,0 +1,150 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Giphy HW</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+
+<div class="jumbotron">
+  <h1 class="display-3">Magically Appearing GIFs</h1>
+</div>
+
+<div class="row" style="height: 50px;">
+  <div class="col-md-8 col-xs-12">
+    <h2>Press the buttons to get some GIFs</h2>
+  </div>
+
+  <div class="col-md-3 col-xs-8">
+    <form>
+      <div class="form-group">
+        <label for="addAnimal">Wanna see another animal? Enter it here!</label>
+        <input type="text" class="form-control" id="newAnimal" placeholder="New Animal">
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="addTopic">Add it!</button>
+    </form>
+  </div>
+
+  <div class"col-md-1 col-xs-4"></div>
+</div>
+
+<div class="row" style="height: 50px;">
+  <div class="col-md-12 col-xs-12">
+    <div id="buttons"></div>
+
+    <div id="gifs-appear-here"></div>
+  </div>
+</div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+
+var topics = ["Snow Leopard", "Otter", "Binturong"];
+
+function addButton() {
+  $("#buttons").html("");
+  for (var a = 0; a < topics.length; a++) {
+    var buttonDiv = $("#buttons");
+    var buttonCreate = $("<button>").text(topics[a]);
+    buttonDiv.append(buttonCreate);
+    buttonCreate.attr("id", topics[a]);
+  }
+}
+
+  //   $("#addTopic").click(function(){
+  //     var newListItem;
+  //     newListItem = $("#newAnimal").val().trim();
+  //     topics.push(newListItem);
+  //     console.log(newListItem);
+  //     addButton();
+  //   });
+  // }
+
+  function addNewButton() {
+    $("#buttons").html("");
+    for (var b = 0; b < topics.length; b++) {
+      var newButtonDiv = $("#buttons");
+      var newButtonCreate = $("<button>").text(topics[b]);
+      newButtonDiv.append(newButtonCreate);
+      newButtonCreate.attr("id", topics[b]);
+    }
+  }
+
+  $("form").on("click", ".btn-primary", function(){
+    var newListItem;
+    newListItem = $("#newAnimal").val().trim();
+    topics.push(newListItem);
+    console.log(newListItem);
+    addNewButton();
+  });
+
+    // console.log(topics);
+
+$(document).ready(function() {
+
+  addButton();
+
+  $("#buttons").on("click", "button", function() {
+
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + this.id + "&api_key=522442a678be4e5c8618d87ec9070883&limit=10";
+
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    })
+
+    .done(function(response) {
+
+      var results = response.data;
+
+      for (var i = 0; i < results.length; i++) {
+        if (results[i].rating !== "r") {
+          var gifDiv = $("<div class='item'>");
+
+          var rating = results[i].rating;
+
+          var p = $("<p>").text("Rating: " + rating);
+
+          topicImage = $("<img>");
+          topicImage.data('result', i);
+
+          topicImage.attr("src", results[i].images.fixed_height_still.url);
+          topicImage.attr("data-still", results[i].images.fixed_height_still.url);
+          topicImage.attr("data-animate", results[i].images.fixed_height.url);
+          topicImage.attr("data-state", "still");
+
+          topicImage.on("click", function() {
+            var state = $(this).attr("data-state");
+              // console.log($(this).data("result"));
+            if (state == "still") {
+              $(this).attr("src", $(this).attr("data-animate"));
+              $(this).attr("data-state", "animate");
+            } else {
+              $(this).attr("src", $(this).attr("data-still"));
+              $(this).attr("data-state", "still");
+            }
+          });
+
+          gifDiv.append(p);
+          gifDiv.append(topicImage);
+
+          $("#gifs-appear-here").prepend(gifDiv);
+        }
+      }
+    });
+  });
+});
+
+
+
+
+
+  </script>
+</body>
+</html>

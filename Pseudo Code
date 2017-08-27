@@ -1,0 +1,10 @@
+Giphy Pseudo code
+
+The only thing I cannot figure out is how to push the new search terms to my button array and have it display.
+I have a couple of things that I tried still in the code but at best, all they do is push the new terms to the array for a very brief period
+of time before disappearing. I am not sure what is causing them to not persist. Here is the pseudo code for what I am trying to do.
+
+-Create a click event to capture input when the submit button is clicked.
+-Use jQuery to get input value and assign to a variable.
+-Push variable to the topics array
+-Run function to display button and create click event to search for gifs with that tag
